@@ -162,24 +162,8 @@ def cpu_consume(interval, **kwargs):
     cpu_score = cpu_speed()
     cpu_count = total_cpu()
 
-    if cpu_score <= 400000:
-        n_start = int(cpu_score * 0.13) * cpu_count
-        n_stop = int(cpu_score * 0.14) * cpu_count
-    elif cpu_score <= 500000:
-        n_start = int(cpu_score * 0.11) * cpu_count
-        n_stop = int(cpu_score * 0.12) * cpu_count
-    elif cpu_score <= 600000:
-        n_start = int(cpu_score * 0.081) * cpu_count
-        n_stop = int(cpu_score * 0.082) * cpu_count
-    elif cpu_score <= 700000:
-        n_start = int(cpu_score * 0.071) * cpu_count
-        n_stop = int(cpu_score * 0.072) * cpu_count
-    elif cpu_score <= 800000:
-        n_start = int(cpu_score * 0.068) * cpu_count
-        n_stop = int(cpu_score * 0.069) * cpu_count
-    else:
-        n_start = int(cpu_score * 0.062) * cpu_count
-        n_stop = int(cpu_score * 0.063) * cpu_count
+    n_start = int(cpu_score * 0.1) * cpu_count
+    n_stop = int(cpu_score * 0.11) * cpu_count
 
     round_count = None
     while True:
