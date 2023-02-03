@@ -37,14 +37,14 @@ uninstall() {
 
 RunScript() {
   if [ "$1" = "install" ]; then
-    if [ `check` ]; then
+    if [ "$check" ]; then
       uninstall
       install
     else
       install
     fi
   elif [ "$1" = "update" ]; then
-    if [ `check` ]; then
+    if [ "$check" ]; then
       update
     else
       install
