@@ -125,8 +125,8 @@ def cpu_consume(interval, **kwargs):
         n_start = 60000
         n_stop = 80000
     else:
-        n_start = 100000
-        n_stop = 120000
+        n_start = 80000
+        n_stop = 100000
 
     while True:
         # 计数没有结束需要继续消耗
