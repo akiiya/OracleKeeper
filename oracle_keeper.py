@@ -1,5 +1,6 @@
 import gc
 import os
+import re
 import time
 import codecs
 import random
@@ -94,6 +95,40 @@ def total_cpu():
     return multiprocessing.cpu_count()
 
 
+# cpu跑分
+def cpu_speed():
+    def fibonacci(n):
+        t1 = time.time()
+        n1, n2 = 0, 1
+        count = 0
+        while count < n:
+            n3 = n1 + n2
+            n1 = n2
+            n2 = n3
+            count += 1
+
+        tx = time.time() - t1
+
+        return tx
+
+    round_count = 100
+    fibo_count = 100000
+
+    count_round = 0
+    count_spent = 0
+
+    for n in range(round_count):
+        if n < round_count * 0.1:
+            continue
+        elif n > round_count * 0.9:
+            continue
+        else:
+            count_spent += fibonacci(fibo_count)
+            count_round += 1
+
+    return int(fibo_count / (count_spent / count_round))
+
+
 # 消耗内存资源
 def mem_consume(memory_gb, **kwargs):
     print(f'开始填充内存: {memory_gb}GB')
@@ -108,7 +143,7 @@ def mem_consume(memory_gb, **kwargs):
 
 # 消耗cpu资源,计算斐波那契数列
 def cpu_consume(interval, **kwargs):
-    def sum_fibonacci(n_start, n_stop):
+    def fibonacci(n_start, n_stop):
         t1 = time.time()
 
         n = random.randint(n_start, n_stop)
@@ -124,17 +159,13 @@ def cpu_consume(interval, **kwargs):
         if tx < 1:  # 耗时不足1秒补齐1秒
             time.sleep(1 - tx)
 
-    round_count = None
+    cpu_score = cpu_speed()
 
-    # 当服务器内存数量不超过3GB,说明为AMD配额
-    if total_mem() <= 3:
-        # AMD 服务器
-        n_start = 54000 * total_cpu()
-        n_stop = 57000 * total_cpu()
-    else:
-        # ARM 服务器
-        n_start = 45000 * total_cpu()
-        n_stop = 50000 * total_cpu()
+    # 根据cpu跑分来计算
+    n_start = int(cpu_score * 0.15) * total_cpu()
+    n_stop = int(cpu_score * 0.17) * total_cpu()
+
+    round_count = None
 
     while True:
         # 计数没有结束需要继续消耗
@@ -142,7 +173,7 @@ def cpu_consume(interval, **kwargs):
             print(f'开始本轮cpu消耗')
             round_count = kwargs.get('round_count', 60 * 60)
         elif round_count > 0:
-            sum_fibonacci(n_start, n_stop)
+            fibonacci(n_start, n_stop)
             round_count -= 1
         else:
             print(f'本轮cpu消耗结束')
