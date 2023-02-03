@@ -159,23 +159,33 @@ def cpu_consume(interval, **kwargs):
         if tx < 1:  # 耗时不足1秒补齐1秒
             time.sleep(1 - tx)
 
-    round_count = None
-    n_start = None
-    n_stop = None
+    cpu_score = cpu_speed()
+    cpu_count = total_cpu()
 
+    if cpu_score <= 400000:
+        n_start = int(cpu_score * 0.13) * cpu_count
+        n_stop = int(cpu_score * 0.14) * cpu_count
+    elif cpu_score <= 500000:
+        n_start = int(cpu_score * 0.11) * cpu_count
+        n_stop = int(cpu_score * 0.12) * cpu_count
+    elif cpu_score <= 600000:
+        n_start = int(cpu_score * 0.081) * cpu_count
+        n_stop = int(cpu_score * 0.082) * cpu_count
+    elif cpu_score <= 700000:
+        n_start = int(cpu_score * 0.071) * cpu_count
+        n_stop = int(cpu_score * 0.072) * cpu_count
+    elif cpu_score <= 800000:
+        n_start = int(cpu_score * 0.068) * cpu_count
+        n_stop = int(cpu_score * 0.069) * cpu_count
+    else:
+        n_start = int(cpu_score * 0.062) * cpu_count
+        n_stop = int(cpu_score * 0.063) * cpu_count
+
+    round_count = None
     while True:
         # 计数没有结束需要继续消耗
         if round_count is None:
             round_count = kwargs.get('round_count', 60 * 60)
-            cpu_score = cpu_speed()
-            cpu_count = total_cpu()
-            if cpu_count <= 2:
-                # 根据cpu跑分来计算
-                n_start = int(cpu_score * 0.10) * cpu_count
-                n_stop = int(cpu_score * 0.12) * cpu_count
-            else:
-                n_start = int(cpu_score * 0.068) * cpu_count
-                n_stop = int(cpu_score * 0.073) * cpu_count
             print(f'开始本轮cpu消耗')
         elif round_count > 0:
             fibonacci(n_start, n_stop)
