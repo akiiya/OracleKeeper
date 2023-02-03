@@ -129,8 +129,8 @@ def cpu_consume(interval, **kwargs):
     # 当服务器内存数量不超过3GB,说明为AMD配额
     if total_mem() <= 3:
         # AMD 服务器
-        n_start = 55000 * total_cpu()
-        n_stop = 58000 * total_cpu()
+        n_start = 54000 * total_cpu()
+        n_stop = 57000 * total_cpu()
     else:
         # ARM 服务器
         n_start = 45000 * total_cpu()
