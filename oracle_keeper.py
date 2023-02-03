@@ -102,15 +102,10 @@ def mem_consume(memory_gb, **kwargs):
 
 # 消耗cpu资源,计算斐波那契数列
 def cpu_consume(interval, **kwargs):
-    def sum_fibonacci(n_start=None, n_stop=None):
+    def sum_fibonacci(n_start, n_stop):
         t1 = time.time()
-        if not n_start:
-            n_start = 180000
-        if not n_stop:
-            n_stop = 240000
 
         n = random.randint(n_start, n_stop)
-
         n1, n2 = 0, 1
         count = 0
         while count < n:
@@ -118,8 +113,8 @@ def cpu_consume(interval, **kwargs):
             n1 = n2
             n2 = n3
             count += 1
-        tx = time.time() - t1
 
+        tx = time.time() - t1
         if tx < 1:  # 耗时不足1秒补齐1秒
             time.sleep(1 - tx)
 
@@ -127,11 +122,11 @@ def cpu_consume(interval, **kwargs):
     mem_total_gb = total_mem()
     # 当服务器内存数量不超过3GB,说明为AMD配额
     if mem_total_gb <= 3:
-        n_start = 100000
-        n_stop = 110000
+        n_start = 80000
+        n_stop = 100000
     else:
-        n_start = 180000
-        n_stop = 240000
+        n_start = 130000
+        n_stop = 180000
 
     while True:
         # 计数没有结束需要继续消耗
