@@ -165,7 +165,7 @@ def cpu_consume(interval, **kwargs):
     if cpu_score < 400000:
         n_x = 0.13
         n_y = 0.14
-    elif cpu_score < 600000:
+    elif cpu_score < 550000:
         n_x = 0.11
         n_y = 0.12
     else:
