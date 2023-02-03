@@ -1,8 +1,7 @@
 #!/bin/bash
 
-py_path="/usr/local/oracle_keeper/oracle_keeper.py"
 
-check() {
+checkINSTALL() {
   if [ -f /usr/local/oracle_keeper/oracle_keeper.py ]; then
     return 1
   else
@@ -17,11 +16,13 @@ install() {
   systemctl daemon-reload
   systemctl enable oracle_keeper
   systemctl start oracle_keeper
+  echo '服务安装完成'
 }
 
 update() {
   wget -N --no-check-certificate https://raw.githubusercontent.com/akiiya/OracleKeeper/master/oracle_keeper.py -O /usr/local/oracle_keeper/oracle_keeper.py
   systemctl restart oracle_keeper
+  echo '服务更新完成'
 }
 
 uninstall() {
@@ -31,6 +32,7 @@ uninstall() {
   rm -rf /etc/oracle_keeper
   rm /usr/lib/systemd/system/oracle_keeper.service
   systemctl daemon-reload
+  echo '服务卸载完成'
 }
 
 RunScript() {
@@ -58,4 +60,6 @@ RunScript() {
 
 RunScript $1
 
-echo "脚本执行完成"
+echo '脚本执行完成'
+
+
