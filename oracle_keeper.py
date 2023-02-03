@@ -119,14 +119,14 @@ def cpu_consume(interval, **kwargs):
             time.sleep(1 - tx)
 
     round_count = None
-    mem_total_gb = total_mem()
+
     # 当服务器内存数量不超过3GB,说明为AMD配额
-    if mem_total_gb <= 3:
+    if total_mem() <= 3:
         n_start = 80000
-        n_stop = 80001
+        n_stop = 90000
     else:
-        n_start = 100000
-        n_stop = 100001
+        n_start = 90000
+        n_stop = 100000
 
     while True:
         # 计数没有结束需要继续消耗
