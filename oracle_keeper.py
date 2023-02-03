@@ -40,6 +40,7 @@ def read_pid():
 def read_conf():
     conf = ConfigParser()  # 需要实例化一个ConfigParser对象
     if not os.path.exists(conf_file_path):
+        total_mem_gb = total_mem()
         conf.add_section('cpu')
         conf.set('cpu', 'enable', '1')
         conf.set('cpu', 'round_count', '3600')  # 每一轮执行次数
@@ -54,7 +55,7 @@ def read_conf():
         conf.set('net', 'interval_second', '0')
 
         # 当服务器内存数量不超过3GB,说明为AMD配额
-        if total_mem() <= 3:
+        if total_mem_gb <= 3:
             conf.set('net', 'max_speed_mb', '8')  # 下载限速
         else:
             conf.set('net', 'max_speed_mb', '10')  # 下载限速
@@ -62,8 +63,12 @@ def read_conf():
         conf.set('net', 'round_size_gb', '3')  # 每一轮下载的数据总量GB
 
         conf.add_section('mem')
-        conf.set('mem', 'enable', '1')
-        conf.set('mem', 'memory_gb', '3')
+        if total_mem_gb <= 3:
+            conf.set('mem', 'enable', '0')  # 由于AMD没有此要求,因此内存小于3默认不启用内存占用
+            conf.set('mem', 'memory_gb', '0')
+        else:
+            conf.set('mem', 'enable', '1')
+            conf.set('mem', 'memory_gb', str(round(total_mem_gb * 0.13, 3)))  # 默认设置占用内存为13%,稍微超过甲骨文要求
 
         conf_root = os.path.dirname(conf_file_path)
 
@@ -85,11 +90,6 @@ def total_mem():
 
 # 消耗内存资源
 def mem_consume(memory_gb, **kwargs):
-    # 当服务器内存数量不超过3GB,说明为AMD配额
-    if total_mem() <= 3:
-        print(f'无法填充内存: 总内存仅为{total_mem()}GB')
-        return
-
     print(f'开始填充内存: {memory_gb}GB')
     while True:
         # 消耗内存
@@ -210,7 +210,7 @@ def main_consume():
     conf = read_conf()
 
     mem_enable = conf.getint('mem', 'enable')
-    memory_gb = conf.getint('mem', 'memory_gb')
+    memory_gb = conf.getfloat('mem', 'memory_gb')
 
     cpu_enable = conf.getint('cpu', 'enable')
     cpu_round_count = conf.getint('cpu', 'round_count')
