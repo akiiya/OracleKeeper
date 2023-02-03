@@ -159,7 +159,7 @@ def cpu_consume(interval, **kwargs):
         if tx < 1:  # 耗时不足1秒补齐1秒
             time.sleep(1 - tx)
 
-    cpu_score = cpu_speed()
+    cpu_score = kwargs['cpu_score']
     cpu_count = total_cpu()
 
     if cpu_score < 400000:
@@ -252,6 +252,8 @@ def main_consume():
     close_older()
     conf = read_conf()
 
+    cpu_score = cpu_speed()
+
     mem_enable = conf.getint('mem', 'enable')
     memory_gb = conf.getfloat('mem', 'memory_gb')
 
@@ -284,6 +286,7 @@ def main_consume():
             target=cpu_consume,
             kwargs={
                 'interval': cpu_interval,
+                'cpu_score': cpu_score,
                 'round_count': cpu_round_count,
             }
         ).start()
