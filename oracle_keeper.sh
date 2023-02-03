@@ -35,3 +35,5 @@ RunScript() {
 }
 
 RunScript $1
+
+echo "脚本执行完成"
