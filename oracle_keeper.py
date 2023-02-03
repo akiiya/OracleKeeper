@@ -160,10 +160,14 @@ def cpu_consume(interval, **kwargs):
             time.sleep(1 - tx)
 
     cpu_score = cpu_speed()
-
-    # 根据cpu跑分来计算
-    n_start = int(cpu_score * 0.15) * total_cpu()
-    n_stop = int(cpu_score * 0.17) * total_cpu()
+    cpu_count = total_cpu()
+    if cpu_count <= 2:
+        # 根据cpu跑分来计算
+        n_start = int(cpu_score * 0.10) * cpu_count
+        n_stop = int(cpu_score * 0.12) * cpu_count
+    else:
+        n_start = int(cpu_score * 0.06) * cpu_count
+        n_stop = int(cpu_score * 0.08) * cpu_count
 
     round_count = None
 
