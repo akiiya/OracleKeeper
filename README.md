@@ -4,17 +4,17 @@
 ### 安装服务并启动
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/akiiya/Shell/master/oracle_keeper/oracle_keeper.sh) install
+bash <(curl -Ls https://oracle-keeper.pages.dev/oracle_keeper.sh) install
 ```
 
 ### 更新脚本并重启
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/akiiya/Shell/master/oracle_keeper/oracle_keeper.sh) update
+bash <(curl -Ls https://oracle-keeper.pages.dev/oracle_keeper.sh) update
 ```
 
 ### 关闭服务并卸载
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/akiiya/Shell/master/oracle_keeper/oracle_keeper.sh) uninstall
+bash <(curl -Ls https://oracle-keeper.pages.dev/oracle_keeper.sh) uninstall
 ```
