@@ -1,9 +1,9 @@
 import gc
 import os
-import random
-import threading
 import time
 import codecs
+import random
+import threading
 import traceback
 
 import urllib3
@@ -52,7 +52,13 @@ def read_conf():
         conf.set('net', 'interval_hour', '2')
         conf.set('net', 'interval_minute', '0')
         conf.set('net', 'interval_second', '0')
-        conf.set('net', 'max_speed_mb', '10')  # 下载限速
+
+        # 当服务器内存数量不超过3GB,说明为AMD配额
+        if total_mem() <= 3:
+            conf.set('net', 'max_speed_mb', '8')  # 下载限速
+        else:
+            conf.set('net', 'max_speed_mb', '10')  # 下载限速
+
         conf.set('net', 'round_size_gb', '3')  # 每一轮下载的数据总量GB
 
         conf.add_section('mem')
@@ -72,8 +78,18 @@ def read_conf():
     return conf
 
 
+# 获取系统总内存数(GB),根据系统物理内存大小判断机器为AMD还是ARM
+def total_mem():
+    return (os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")) / (1024 * 1024 * 1024)
+
+
 # 消耗内存资源
 def mem_consume(memory_gb, **kwargs):
+    # 当服务器内存数量不超过3GB,说明为AMD配额
+    if total_mem() <= 3:
+        print(f'无法填充内存: 总内存仅为{total_mem()}GB')
+        return
+
     print(f'开始填充内存: {memory_gb}GB')
     while True:
         # 消耗内存
@@ -86,10 +102,15 @@ def mem_consume(memory_gb, **kwargs):
 
 # 消耗cpu资源,计算斐波那契数列
 def cpu_consume(interval, **kwargs):
-    def sum_fibonacci(n=None):
+    def sum_fibonacci(n_start=None, n_stop=None):
         t1 = time.time()
-        if not n:
-            n = random.randint(180000, 240000)
+        if not n_start:
+            n_start = 180000
+        if not n_stop:
+            n_stop = 240000
+
+        n = random.randint(n_start, n_stop)
+
         n1, n2 = 0, 1
         count = 0
         while count < n:
@@ -103,6 +124,14 @@ def cpu_consume(interval, **kwargs):
             time.sleep(1 - tx)
 
     round_count = None
+    mem_total_gb = total_mem()
+    # 当服务器内存数量不超过3GB,说明为AMD配额
+    if mem_total_gb <= 3:
+        n_start = 100000
+        n_stop = 110000
+    else:
+        n_start = 180000
+        n_stop = 240000
 
     while True:
         # 计数没有结束需要继续消耗
@@ -110,7 +139,7 @@ def cpu_consume(interval, **kwargs):
             print(f'开始本轮cpu消耗')
             round_count = kwargs.get('round_count', 60 * 60)
         elif round_count > 0:
-            sum_fibonacci()
+            sum_fibonacci(n_start, n_stop)
             round_count -= 1
         else:
             print(f'本轮cpu消耗结束')
