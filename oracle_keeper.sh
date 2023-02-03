@@ -8,6 +8,17 @@ check() {
   fi
 }
 
+update() {
+  check
+  if [[ $? == 0 ]]; then
+    install
+  else
+    wget -N --no-check-certificate https://raw.githubusercontent.com/akiiya/OracleKeeper/master/oracle_keeper.py -O /usr/local/oracle_keeper/oracle_keeper.py
+    systemctl restart oracle_keeper
+    echo '服务更新完成'
+  fi
+}
+
 install() {
   check
   if [[ $? == 1 ]]; then
@@ -24,15 +35,9 @@ install() {
   echo '服务安装完成'
 }
 
-update() {
-  check
-  if [[ $? == 0 ]]; then
-    install
-  else
-    wget -N --no-check-certificate https://raw.githubusercontent.com/akiiya/OracleKeeper/master/oracle_keeper.py -O /usr/local/oracle_keeper/oracle_keeper.py
-    systemctl restart oracle_keeper
-    echo '服务更新完成'
-  fi
+reinstall(){
+  uninstall
+  install
 }
 
 uninstall() {
@@ -52,6 +57,5 @@ elif [ "$1" = "update" ]; then
 elif [ "$1" = "uninstall" ]; then
   uninstall
 else
-  install
-  # echo "脚本参数错误: install|update|uninstall"
+  reinstall
 fi
