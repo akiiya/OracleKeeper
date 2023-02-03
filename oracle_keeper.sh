@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/sudo /bin/bash
 
 check() {
   if [ -f /usr/lib/systemd/system/oracle_keeper.service ]; then
