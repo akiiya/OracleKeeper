@@ -52,5 +52,6 @@ elif [ "$1" = "update" ]; then
 elif [ "$1" = "uninstall" ]; then
   uninstall
 else
-  echo "脚本参数错误: install|update|uninstall"
+  install
+  # echo "脚本参数错误: install|update|uninstall"
 fi
