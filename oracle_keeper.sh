@@ -12,6 +12,7 @@ install() {
   check
   if [[ $? == 1 ]]; then
     uninstall
+    sleep 2
   fi
 
   mkdir -p /usr/local/oracle_keeper
@@ -51,5 +52,5 @@ elif [ "$1" = "update" ]; then
 elif [ "$1" = "uninstall" ]; then
   uninstall
 else
-  echo "Error command"
+  echo "脚本参数错误: install|update|uninstall"
 fi
