@@ -3,10 +3,11 @@ import os
 import time
 import codecs
 import random
+import urllib3
 import threading
 import traceback
+import multiprocessing
 
-import urllib3
 from io import BytesIO
 from configparser import ConfigParser
 
@@ -88,6 +89,11 @@ def total_mem():
     return (os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")) / (1024 * 1024 * 1024)
 
 
+# 获取cpu核心数
+def total_cpu():
+    return multiprocessing.cpu_count()
+
+
 # 消耗内存资源
 def mem_consume(memory_gb, **kwargs):
     print(f'开始填充内存: {memory_gb}GB')
@@ -122,11 +128,13 @@ def cpu_consume(interval, **kwargs):
 
     # 当服务器内存数量不超过3GB,说明为AMD配额
     if total_mem() <= 3:
-        n_start = 120000
-        n_stop = 140000
+        # AMD 服务器
+        n_start = 100000
+        n_stop = 110000
     else:
-        n_start = 180000
-        n_stop = 190000
+        # ARM 服务器
+        n_start = 45000 * total_cpu()
+        n_stop = 50000 * total_cpu()
 
     while True:
         # 计数没有结束需要继续消耗
