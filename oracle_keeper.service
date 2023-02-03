@@ -1,0 +1,15 @@
+[Unit]
+Description=oracle_keeper
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/usr/local/oracle_keeper
+ExecStart=/usr/bin/python3 /usr/local/oracle_keeper/oracle_keeper.py
+ExecReload=/usr/bin/python3 /usr/local/oracle_keeper/oracle_keeper.py
+
+[Install]
+WantedBy=multi-user.target
