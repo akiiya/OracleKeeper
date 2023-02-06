@@ -85,6 +85,20 @@ def read_conf():
     return conf
 
 
+# 计算斐波那契数列
+def fibonacci(n):
+    t1 = time.time()
+    n1, n2 = 0, 1
+    count = 0
+    while count < n:
+        n3 = n1 + n2
+        n1 = n2
+        n2 = n3
+        count += 1
+
+    return time.time() - t1
+
+
 # 获取系统总内存数(GB),根据系统物理内存大小判断机器为AMD还是ARM
 def total_mem():
     return (os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")) / (1024 * 1024 * 1024)
@@ -97,20 +111,6 @@ def total_cpu():
 
 # cpu跑分
 def cpu_speed():
-    def fibonacci(n):
-        t1 = time.time()
-        n1, n2 = 0, 1
-        count = 0
-        while count < n:
-            n3 = n1 + n2
-            n1 = n2
-            n2 = n3
-            count += 1
-
-        tx = time.time() - t1
-
-        return tx
-
     round_count = 100
     fibo_count = 100000
 
@@ -143,22 +143,6 @@ def mem_consume(memory_gb, **kwargs):
 
 # 消耗cpu资源,计算斐波那契数列
 def cpu_consume(interval, **kwargs):
-    def fibonacci(n_start, n_stop):
-        t1 = time.time()
-
-        n = random.randint(n_start, n_stop)
-        n1, n2 = 0, 1
-        count = 0
-        while count < n:
-            n3 = n1 + n2
-            n1 = n2
-            n2 = n3
-            count += 1
-
-        tx = time.time() - t1
-        if tx < 1:  # 耗时不足1秒补齐1秒
-            time.sleep(1 - tx)
-
     cpu_score = kwargs['cpu_score']
     cpu_count = total_cpu()
 
@@ -179,7 +163,9 @@ def cpu_consume(interval, **kwargs):
             round_count = kwargs.get('round_count', 60 * 60)
             print(f'开始本轮cpu消耗')
         elif round_count > 0:
-            fibonacci(n_start, n_stop)
+            tx = fibonacci(random.randint(n_start, n_stop))
+            if tx < 1:  # 耗时不足1秒补齐1秒
+                time.sleep(1 - tx)
             round_count -= 1
         else:
             print(f'本轮cpu消耗结束')
@@ -220,10 +206,10 @@ def net_consume(interval, **kwargs):
                 if not chunk:
                     break
 
-                shape_time = time.time() - last_timestamp
+                tx = time.time() - last_timestamp
 
-                if shape_time < 1:
-                    time.sleep(1 - shape_time)
+                if tx < 1:
+                    time.sleep(1 - tx)
 
                 download_size += len(chunk)
                 del chunk
