@@ -148,7 +148,7 @@ def cpu_consume(interval, **kwargs):
 
     if cpu_count <= 2:
         n_x = 0.136
-        n_y = 0.141
+        n_y = 0.156
     else:
         n_x = 0.063
         n_y = 0.065
