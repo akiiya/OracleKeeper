@@ -11,6 +11,7 @@ import multiprocessing
 
 from io import BytesIO
 from configparser import ConfigParser
+from datetime import datetime, timedelta, timezone
 
 # conf_file_path = 'conf/config.ini'
 # pid_file_path = 'conf/oracle_keeper.pid'
@@ -143,7 +144,6 @@ def mem_consume(memory_gb, **kwargs):
 
 # 消耗cpu资源,计算斐波那契数列
 def cpu_consume(interval, **kwargs):
-    cpu_score = kwargs['cpu_score']
     cpu_count = total_cpu()
 
     if cpu_count <= 2:
@@ -153,8 +153,8 @@ def cpu_consume(interval, **kwargs):
         n_x = 0.063
         n_y = 0.067
 
-    n_start = int(cpu_score * n_x) * cpu_count
-    n_stop = int(cpu_score * n_y) * cpu_count
+    n_start = None
+    n_stop = None
 
     round_count = None
     while True:
@@ -162,6 +162,9 @@ def cpu_consume(interval, **kwargs):
         if round_count is None:
             round_count = kwargs.get('round_count', 60 * 60)
             print(f'开始本轮cpu消耗')
+            cpu_score = cpu_speed()
+            n_start = int(cpu_score * n_x) * cpu_count
+            n_stop = int(cpu_score * n_y) * cpu_count
         elif round_count > 0:
             tx = fibonacci(random.randint(n_start, n_stop))
             if tx < 1:  # 耗时不足1秒补齐1秒
@@ -235,8 +238,6 @@ def main_consume():
     close_older()
     conf = read_conf()
 
-    cpu_score = cpu_speed()
-
     mem_enable = conf.getint('mem', 'enable')
     memory_gb = conf.getfloat('mem', 'memory_gb')
 
@@ -269,7 +270,6 @@ def main_consume():
             target=cpu_consume,
             kwargs={
                 'interval': cpu_interval,
-                'cpu_score': cpu_score,
                 'round_count': cpu_round_count,
             }
         ).start()
